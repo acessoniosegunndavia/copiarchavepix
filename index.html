@@ -1,144 +1,230 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Negociação PIX</title>
 
-  <title>Negociação • Pagamento PIX</title>
+<style>
+:root{
+  --bg:#020617;
+  --card:#020617;
+  --green:#22c55e;
+  --green2:#4ade80;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(160deg, #0b1f1a, #020c09);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-      color: #e0fff6;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#020617,#0f172a);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+}
 
-    .box {
-      width: 100%;
-      max-width: 520px;
-      min-height: 85vh;
-      background: rgba(10, 40, 30, 0.95);
-      border-radius: 18px;
-      padding: 28px 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(0, 255, 180, 0.15);
-      border: 1px solid rgba(0, 255, 180, 0.15);
-    }
+.container{
+  width:100%;
+  max-width:420px;
+}
 
-    .tag {
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-      color: #00ffc8;
-      margin-bottom: 6px;
-    }
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 0 40px rgba(34,197,94,.18);
+  border:1px solid rgba(34,197,94,.25);
+}
 
-    h2 {
-      margin: 0 0 12px;
-      font-size: 1.7rem;
-      color: #b8ffe9;
-    }
+.header{
+  text-align:center;
+  margin-bottom:14px;
+}
 
-    p {
-      font-size: 1rem;
-      color: #c9fff0;
-      margin-bottom: 14px;
-    }
+.badge{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:20px;
+  background:rgba(34,197,94,.15);
+  color:var(--green2);
+  font-size:13px;
+  margin-bottom:8px;
+}
 
-    .qr {
-      background: #ffffff;
-      padding: 12px;
-      border-radius: 14px;
-      display: inline-block;
-      margin: 10px auto 20px;
-    }
+h1{
+  font-size:22px;
+  margin:8px 0;
+  color:var(--green2);
+}
 
-    .pix {
-      word-break: break-all;
-      font-size: 0.85rem;
-      background: rgba(0,0,0,0.4);
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 18px;
-      border: 1px solid rgba(0, 255, 180, 0.2);
-    }
+.timer{
+  margin-top:10px;
+  font-size:14px;
+  color:#facc15;
+}
 
-    button {
-      background: linear-gradient(135deg, #00ffc8, #00cfa1);
-      color: #00241b;
-      border: none;
-      padding: 18px;
-      font-size: 1.15rem;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.box{
+  background:#020617;
+  border-radius:14px;
+  padding:16px;
+  margin-top:16px;
+  border:1px solid rgba(148,163,184,.15);
+}
 
-    button:active {
-      transform: scale(0.97);
-    }
+.row{
+  display:flex;
+  justify-content:space-between;
+  font-size:15px;
+  margin-bottom:6px;
+}
 
-    #msg {
-      margin-top: 14px;
-      font-size: 0.95rem;
-      color: #7dffe1;
-    }
+.value{
+  font-size:26px;
+  font-weight:bold;
+  color:var(--green2);
+  margin-top:6px;
+}
 
-    @media (min-width: 768px) {
-      .box {
-        min-height: auto;
-      }
-    }
-  </style>
+.qr{
+  text-align:center;
+  margin-top:16px;
+}
+
+.qr img{
+  max-width:220px;
+  width:100%;
+  background:#fff;
+  padding:10px;
+  border-radius:12px;
+}
+
+.pix{
+  margin-top:14px;
+  font-size:13px;
+  word-break:break-all;
+  background:#020617;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,.2);
+}
+
+button{
+  margin-top:12px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#022c22;
+  font-weight:bold;
+  font-size:16px;
+  cursor:pointer;
+}
+
+footer{
+  margin-top:14px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+</style>
 </head>
+
 <body>
 
-  <div class="box">
-    <div class="tag">NEGOCIAÇÃO</div>
-    <h2>Pagamento via PIX</h2>
-    <p>Escaneie o QR Code ou copie o código abaixo para concluir o acordo.</p>
+<div class="container">
+  <div class="card">
+    <div class="header">
+      <div class="badge">NEGOCIAÇÃO ATIVA</div>
+      <h1>Pagamento via PIX</h1>
+      <div class="timer" id="contador">Carregando...</div>
+    </div>
 
-    <!-- QR CODE -->
+    <div class="box">
+      <div class="row">
+        <span>Cliente</span>
+        <span id="cliente">—</span>
+      </div>
+      <div class="row">
+        <span>Valor</span>
+        <span class="value">R$ <span id="valor">0,00</span></span>
+      </div>
+    </div>
+
     <div class="qr">
-      <img 
-        src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=00020101021226940014br.gov.bcb.pix2572qrcode.hyperwalletip.com.br/dynamic/33c16a84-d84e-4db2-bd20-9008a60d0f1c5204000053039865802BR5910VCOIN%20LTDA6009Sao%20Paulo62070503***63041F95"
-        alt="QR Code PIX">
+      <img id="qrcode" src="" alt="QR Code PIX">
     </div>
 
-    <!-- PIX COPIA E COLA -->
-    <div id="pix" class="pix">
-00020101021226940014br.gov.bcb.pix2572qrcode.somossimpay.com.br/v2/qr/cob/38e6a8b7-6663-428c-865e-8b9565bb96595204000053039865802BR5921MARKETPLACE PAGO LTDA6009SAO PAULO62070503***6304DBEF
-    </div>
+    <div class="pix" id="pix">—</div>
 
-    <button onclick="copiarPix()">📋 Copiar PIX</button>
-    <div id="msg"></div>
+    <button onclick="copiarPix()">COPIAR CHAVE PIX</button>
+
+    <footer>
+      Esta negociação expira automaticamente
+    </footer>
   </div>
+</div>
 
-  <script>
-    function copiarPix() {
-      const texto = document.getElementById("pix").innerText;
-      navigator.clipboard.writeText(texto).then(() => {
-        document.getElementById("msg").innerText = "Código PIX copiado com sucesso ✅";
-      }).catch(() => {
-        document.getElementById("msg").innerText = "Não foi possível copiar automaticamente ❌";
-      });
-    }
-  </script>
+<script>
+// 🔹 Ler parâmetros
+const p = new URLSearchParams(window.location.search);
+
+const nome = p.get("nome") || "Cliente";
+const valor = p.get("valor") || "0.00";
+const pix = p.get("pix") || "";
+const id = p.get("id") || "default";
+
+// 🔹 Preencher dados
+document.getElementById("cliente").innerText = decodeURIComponent(nome);
+document.getElementById("valor").innerText =
+  parseFloat(valor).toFixed(2).replace(".", ",");
+
+document.getElementById("pix").innerText = decodeURIComponent(pix);
+
+// 🔹 Gerar QR Code
+document.getElementById("qrcode").src =
+  "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+  encodeURIComponent(pix);
+
+// 🔹 Contador de 1h por ID
+const KEY = "exp_" + id;
+let exp = localStorage.getItem(KEY);
+
+if (!exp) {
+  exp = Date.now() + 3600000;
+  localStorage.setItem(KEY, exp);
+}
+
+function tick(){
+  const diff = exp - Date.now();
+  if (diff <= 0) {
+    document.getElementById("contador").innerText =
+      "❌ Negociação expirada";
+    return;
+  }
+  const m = Math.floor(diff / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById("contador").innerText =
+    `⏳ Expira em ${m}m ${s}s`;
+}
+setInterval(tick, 1000);
+tick();
+
+// 🔹 Copiar PIX
+function copiarPix(){
+  navigator.clipboard.writeText(pix);
+  alert("Chave PIX copiada");
+}
+</script>
 
 </body>
 </html>
+
 
 
 
