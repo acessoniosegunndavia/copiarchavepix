@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Link PIX • Negociação</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --green: #22c55e;
+      --green-light: #4ade80;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #020617, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      max-width: 420px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(34,197,94,.15);
+      border: 1px solid rgba(34,197,94,.25);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      color: var(--green-light);
+      text-align: center;
+    }
+
+    p.sub {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,.3);
+      background: #020617;
+      color: var(--text);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #022c22;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(34,197,94,.35);
+    }
+
+    .result {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .result textarea {
+      min-height: 110px;
+    }
+
+    .copy {
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid var(--green);
+      color: var(--green-light);
+    }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>🔗 Gerador de Link PIX</h1>
+    <p class="sub">Tema Negociação • Link único por cliente</p>
+
+    <label>Nome do cliente</label>
+    <input id="nome" placeholder="Ex: Gabriel Rodrigues" />
+
+    <label>Valor (use ponto)</label>
+    <input id="valor" placeholder="Ex: 149.90" />
+
+    <label>Chave PIX (copia e cola)</label>
+    <textarea id="pix" placeholder="Cole aqui a chave PIX completa"></textarea>
+
+    <button onclick="gerar()">GERAR LINK</button>
+
+    <div class="result" id="resultado">
+      <label>Link gerado</label>
+      <textarea id="linkFinal" readonly></textarea>
+      <button class="copy" onclick="copiar()">📋 Copiar link</button>
+    </div>
+
+    <footer>
+      A negociação expira em 1 hora após abertura
+    </footer>
+  </div>
+
+<script>
+function gerar() {
+  const nome = encodeURIComponent(document.getElementById("nome").value.trim());
+  const valor = encodeURIComponent(document.getElementById("valor").value.trim());
+  const pix = encodeURIComponent(document.getElementById("pix").value.trim());
+
+  if (!nome || !valor || !pix) {
+    alert("Preencha todos os campos");
+    return;
+  }
+
+  const id = "neg_" + Date.now();
+
+  const base =
+    window.location.origin +
+    window.location.pathname.replace("gerador.html", "");
+
+  const link =
+    base +
+    "?id=" + id +
+    "&nome=" + nome +
+    "&valor=" + valor +
+    "&pix=" + pix;
+
+  document.getElementById("linkFinal").value = link;
+  document.getElementById("resultado").style.display = "block";
+}
+
+function copiar() {
+  const campo = document.getElementById("linkFinal");
+  campo.select();
+  campo.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("Link copiado com sucesso!");
+}
+</script>
+
+</body>
+</html>
