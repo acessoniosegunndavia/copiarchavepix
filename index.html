@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerador PIX</title>
-
 <style>
 *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 html,body{width:100%;height:100%;margin:0}
@@ -36,7 +35,6 @@ button{
 .result textarea{font-size:13px}
 </style>
 </head>
-
 <body>
 <div class="wrapper">
   <div class="card">
@@ -65,6 +63,24 @@ button{
 </div>
 
 <script>
+// 🔹 Função para limpar dados expirados do localStorage
+function limparLocalStorageAntigos() {
+  const agora = Date.now();
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(!key) continue;
+    if(key.startsWith("neg_")){
+      const expKey = "exp_" + key;
+      const exp = parseInt(localStorage.getItem(expKey));
+      if(exp && agora > exp){
+        localStorage.removeItem(key);
+        localStorage.removeItem(expKey);
+      }
+    }
+  }
+}
+limparLocalStorageAntigos();
+
 function gerar(){
   const nome  = document.getElementById("nome").value.trim();
   const doc   = document.getElementById("doc").value.trim();
@@ -78,15 +94,14 @@ function gerar(){
 
   const id = "neg_" + Date.now();
 
-  // 🔥 Link seguro para a página de pagamento
-  const base = new URL("gerador.html", window.location.href).href;
+  // 🔹 Salva os dados no localStorage
+  const data = { nome, doc, valor, pix };
+  localStorage.setItem(id, JSON.stringify(data));
+  localStorage.setItem("exp_" + id, Date.now() + 3600000); // Expira em 1 hora
 
-  const link =
-    `${base}?id=${id}` +
-    `&nome=${encodeURIComponent(nome)}` +
-    `&doc=${encodeURIComponent(doc)}` +
-    `&valor=${encodeURIComponent(valor)}` +
-    `&pix=${encodeURIComponent(pix)}`;
+  // 🔹 Gera link curto
+  const base = new URL("gerador.html", window.location.href).href;
+  const link = `${base}?id=${id}`;
 
   document.getElementById("link").value = link;
   document.getElementById("resultado").style.display = "block";
@@ -101,6 +116,7 @@ function copiar(){
 </script>
 </body>
 </html>
+
 
 
 
