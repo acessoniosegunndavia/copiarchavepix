@@ -78,7 +78,8 @@ function gerar(){
 
   const id = "neg_" + Date.now();
 
-  const base = window.location.origin + "/copiarchavepix/pagamento.html";
+  // 🔥 FORMA CORRETA E DEFINITIVA
+  const base = new URL("pagamento.html", window.location.href).href;
 
   const link =
     `${base}?id=${id}` +
@@ -100,6 +101,8 @@ function copiar(){
 </script>
 </body>
 </html>
+
+
 
 
 
