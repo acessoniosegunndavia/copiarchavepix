@@ -63,45 +63,19 @@ button{
 </div>
 
 <script>
-// 🔹 Limpa dados expirados do localStorage
-function limparLocalStorageAntigos() {
-  const agora = Date.now();
-  for(let i=0;i<localStorage.length;i++){
-    const key = localStorage.key(i);
-    if(!key) continue;
-    if(key.startsWith("neg_")){
-      const expKey = "exp_" + key;
-      const exp = parseInt(localStorage.getItem(expKey));
-      if(exp && agora > exp){
-        localStorage.removeItem(key);
-        localStorage.removeItem(expKey);
-      }
-    }
-  }
-}
-limparLocalStorageAntigos();
-
 function gerar(){
-  const nome  = document.getElementById("nome").value.trim();
-  const doc   = document.getElementById("doc").value.trim();
-  const valor = document.getElementById("valor").value.trim();
-  const pix   = document.getElementById("pix").value.trim();
+  const nome  = encodeURIComponent(document.getElementById("nome").value.trim());
+  const doc   = encodeURIComponent(document.getElementById("doc").value.trim());
+  const valor = encodeURIComponent(document.getElementById("valor").value.trim());
+  const pix   = encodeURIComponent(document.getElementById("pix").value.trim());
 
   if(!nome || !valor || !pix){
     alert("Preencha Nome, Valor e Chave PIX");
     return;
   }
 
-  const id = "neg_" + Date.now();
-
-  // 🔹 Salva os dados no localStorage
-  const data = { nome, doc, valor, pix };
-  localStorage.setItem(id, JSON.stringify(data));
-  localStorage.setItem("exp_" + id, Date.now() + 3600000); // Expira em 1 hora
-
-  // 🔹 Gera link completo
   const base = new URL("gerador.html", window.location.href).href;
-  const link = `${base}?id=${id}`;
+  const link = `${base}?nome=${nome}&doc=${doc}&valor=${valor}&pix=${pix}`;
 
   document.getElementById("link").value = link;
   document.getElementById("resultado").style.display = "block";
@@ -117,6 +91,7 @@ function copiar(){
 </script>
 </body>
 </html>
+
 
 
 
