@@ -10,7 +10,6 @@
   --green:#22c55e;
   --green2:#4ade80;
   --text:#e5e7eb;
-  --muted:#94a3b8;
 }
 *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 body{
@@ -71,7 +70,8 @@ button{
     <div class="box">
       <div class="row"><span>Nome</span><span id="nome">—</span></div>
       <div class="row"><span>CPF/CNPJ</span><span id="documento">—</span></div>
-      <div class="row"><span>Valor</span>
+      <div class="row">
+        <span>Valor</span>
         <span class="value">R$ <span id="valor">0,00</span></span>
       </div>
     </div>
@@ -85,33 +85,33 @@ button{
 <script>
 const params = new URLSearchParams(location.search);
 
-const nome  = decodeURIComponent(params.get("nome") || "—");
-const doc   = decodeURIComponent(params.get("doc") || "—");
+const nome  = params.get("nome") || "—";
+const doc   = params.get("doc") || "—";
 const valor = params.get("valor") || "0";
-const pix   = decodeURIComponent(params.get("pix") || "");
+const pix   = params.get("pix") || "";
 const id    = params.get("id") || "default";
 
-document.getElementById("nome").textContent = nome;
-document.getElementById("documento").textContent = doc;
+document.getElementById("nome").textContent = decodeURIComponent(nome);
+document.getElementById("documento").textContent = decodeURIComponent(doc);
 document.getElementById("valor").textContent =
   parseFloat(valor).toFixed(2).replace(".", ",");
-document.getElementById("pix").textContent = pix;
+document.getElementById("pix").textContent = decodeURIComponent(pix);
 
 document.getElementById("qrcode").src =
   "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
   encodeURIComponent(pix);
 
-// ⏳ expiração 1 hora
+// ⏳ expira em 1 hora
 const KEY = "exp_" + id;
 let exp = localStorage.getItem(KEY);
-if (!exp) {
+if(!exp){
   exp = Date.now() + 3600000;
   localStorage.setItem(KEY, exp);
 }
 
 setInterval(() => {
   const diff = exp - Date.now();
-  if (diff <= 0) {
+  if(diff <= 0){
     document.getElementById("contador").textContent =
       "❌ Negociação expirada";
     return;
@@ -123,7 +123,7 @@ setInterval(() => {
 }, 1000);
 
 function copiarPix(){
-  navigator.clipboard.writeText(pix);
+  navigator.clipboard.writeText(decodeURIComponent(pix));
   alert("Chave PIX copiada");
 }
 </script>
