@@ -3,159 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pagamento via PIX</title>
+<title>Gerador PIX</title>
 
 <style>
-:root{
-  --green:#22c55e;
-  --green2:#4ade80;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-}
 *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
-
+html,body{width:100%;height:100%;margin:0}
 body{
-  margin:0;
-  min-height:100vh;
   background:radial-gradient(circle at top,#0f172a,#020617);
-  color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:16px;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;color:#e5e7eb
 }
-
-.container{max-width:420px;width:100%}
-
+.wrapper{width:100%;max-width:420px}
 .card{
-  background:#020617;
-  border-radius:22px;
-  padding:22px;
+  background:#020617;border-radius:22px;padding:26px;
   border:1px solid rgba(34,197,94,.3);
-  box-shadow:0 0 40px rgba(34,197,94,.25);
+  box-shadow:0 0 40px rgba(34,197,94,.25)
 }
-
-.header{text-align:center}
-.badge{
-  display:inline-block;
-  padding:6px 16px;
-  border-radius:999px;
-  background:rgba(34,197,94,.15);
-  color:var(--green2);
-  font-size:13px;
+h1{text-align:center;color:#4ade80;margin-bottom:24px}
+label{font-size:13px;color:#94a3b8}
+input,textarea{
+  width:100%;padding:14px;margin-top:6px;margin-bottom:18px;
+  border-radius:14px;border:1px solid rgba(148,163,184,.25);
+  background:#020617;color:#e5e7eb;font-size:14px
 }
-h1{color:var(--green2);margin:10px 0}
-.timer{color:#facc15;font-size:14px}
-
-.box{
-  margin-top:16px;
-  padding:16px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.15);
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.value{font-size:26px;color:var(--green2);font-weight:bold}
-
-.qr{text-align:center;margin-top:18px}
-.qr img{
-  max-width:230px;
-  width:100%;
-  background:#fff;
-  padding:10px;
-  border-radius:14px;
-}
-
-.pix{
-  margin-top:16px;
-  padding:12px;
-  border-radius:12px;
-  font-size:13px;
-  word-break:break-all;
-  border:1px solid rgba(148,163,184,.2);
-}
-
+textarea{min-height:90px;resize:none}
 button{
-  margin-top:14px;
-  width:100%;
-  padding:15px;
-  border:none;
-  border-radius:16px;
-  background:linear-gradient(135deg,var(--green),var(--green2));
-  color:#022c22;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
+  width:100%;padding:16px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,#22c55e,#4ade80);
+  color:#022c22;font-size:16px;font-weight:bold;cursor:pointer
 }
+.result{display:none;margin-top:18px}
+.result textarea{font-size:13px}
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="wrapper">
   <div class="card">
-    <div class="header">
-      <div class="badge">NEGOCIAÇÃO NIO FIBRA</div>
-      <h1>Pagamento via PIX</h1>
-      <div class="timer" id="contador">Carregando...</div>
-    </div>
+    <h1>🔗 Gerador PIX</h1>
 
-    <div class="box">
-      <div class="row"><span>Nome</span><span id="nome">—</span></div>
-      <div class="row"><span>CPF/CNPJ</span><span id="documento">—</span></div>
-      <div class="row"><span>Valor</span><span class="value">R$ <span id="valor">0,00</span></span></div>
-    </div>
+    <label>Nome</label>
+    <input id="nome" placeholder="Nome do cliente">
 
-    <div class="qr"><img id="qrcode"></div>
-    <div class="pix" id="pix">—</div>
-    <button onclick="copiarPix()">COPIAR CHAVE PIX</button>
+    <label>CPF ou CNPJ</label>
+    <input id="doc" placeholder="000.000.000-00">
+
+    <label>Valor</label>
+    <input id="valor" placeholder="149.00">
+
+    <label>Chave PIX</label>
+    <textarea id="pix" placeholder="Cole a chave PIX aqui"></textarea>
+
+    <button onclick="gerar()">GERAR LINK</button>
+
+    <div class="result" id="resultado">
+      <label>Link gerado</label>
+      <textarea id="link" readonly></textarea>
+      <button style="margin-top:10px" onclick="copiar()">📋 Copiar link</button>
+    </div>
   </div>
 </div>
 
 <script>
-const params = new URLSearchParams(location.search);
+function gerar(){
+  const nome  = document.getElementById("nome").value.trim();
+  const doc   = document.getElementById("doc").value.trim();
+  const valor = document.getElementById("valor").value.trim();
+  const pix   = document.getElementById("pix").value.trim();
 
-const nome = decodeURIComponent(params.get("nome") || "—");
-const doc = decodeURIComponent(params.get("doc") || "—");
-const valor = params.get("valor") || "0";
-const pix = decodeURIComponent(params.get("pix") || "");
-const id = params.get("id") || "default";
-
-document.getElementById("nome").textContent = nome;
-document.getElementById("documento").textContent = doc;
-document.getElementById("valor").textContent = parseFloat(valor).toFixed(2).replace(".", ",");
-document.getElementById("pix").textContent = pix;
-
-document.getElementById("qrcode").src =
-  "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
-  encodeURIComponent(pix);
-
-// ⏳ 1 HORA REAL
-const KEY = "exp_" + id;
-let exp = localStorage.getItem(KEY);
-if (!exp) {
-  exp = Date.now() + 3600000;
-  localStorage.setItem(KEY, exp);
-}
-
-setInterval(() => {
-  const diff = exp - Date.now();
-  if (diff <= 0) {
-    document.getElementById("contador").textContent = "❌ Negociação expirada";
+  if(!nome || !valor || !pix){
+    alert("Preencha Nome, Valor e Chave PIX");
     return;
   }
-  const m = Math.floor(diff / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  document.getElementById("contador").textContent = `⏳ Expira em ${m}m ${s}s`;
-}, 1000);
 
-function copiarPix(){
-  navigator.clipboard.writeText(pix);
-  alert("Chave PIX copiada");
+  const id = "neg_" + Date.now();
+
+  const base = window.location.origin + "/copiarchavepix/pagamento.html";
+
+  const link =
+    `${base}?id=${id}` +
+    `&nome=${encodeURIComponent(nome)}` +
+    `&doc=${encodeURIComponent(doc)}` +
+    `&valor=${encodeURIComponent(valor)}` +
+    `&pix=${encodeURIComponent(pix)}`;
+
+  document.getElementById("link").value = link;
+  document.getElementById("resultado").style.display = "block";
+}
+
+function copiar(){
+  const campo = document.getElementById("link");
+  campo.select();
+  document.execCommand("copy");
+  alert("Link copiado");
 }
 </script>
 </body>
